@@ -5,6 +5,7 @@ import com.capco.employee.model.SearchParam;
 import com.capco.employee.service.EmployeeService;
 import com.capco.employee.service.EmployeeServiceStub;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class EmployeeControllerTestStub {
     public void findEmployeeDetailsByName() {
         EmployeeService employeeServiceStud = new EmployeeServiceStub();
         EmployeeController employeeController = new EmployeeController(employeeServiceStud);
-        SearchParam searchParam = new SearchParam("firstName", "Tom");
+        SearchParam searchParam = new SearchParam("firstName", "Tom", Sort.Direction.ASC.name());
         ResponseEntity<List<Employee>> employee = employeeController.searchEmployee(searchParam);
         assertEquals(2, employee.getBody().size());
     }

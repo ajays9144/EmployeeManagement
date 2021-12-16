@@ -2,6 +2,7 @@ package com.capco.employee.repository;
 
 import com.capco.employee.entity.EmployeeEntity;
 import net.bytebuddy.TypeCache;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

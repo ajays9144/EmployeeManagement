@@ -6,11 +6,10 @@ import com.capco.employee.model.Employee;
 import com.capco.employee.model.SearchParam;
 import com.capco.employee.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Implementation for Employee Service Class
@@ -54,7 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Update Employee Details, Find Employee from Table With 'Employee Id'
      * If not able to find any Employee Based On 'Employee id' throw Exception
      * Else it update Employee Details with help of 'Employee Entity'
-     * */
+     */
     @Override
     public Employee updateEmployee(Employee employee, String employeeId) {
         Optional<EmployeeEntity> employeeEntity = employeeRepository.findByEmployeeId(employeeId);
@@ -72,28 +71,47 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Search Employee based on 'Search Param' Object Class
      * Check 'SearchBy' Param value from 'Search param' Object and based on that Call two different Methods.
      * Found Result from Repository mapped with Employee Object with help Iterate.
-     * */
+     */
     @Override
     public List<Employee> getEmployeeByName(SearchParam searchParam) {
+        ArrayList<Employee> employees = new ArrayList<>();
         if (searchParam.getSearchBy().equalsIgnoreCase("firstName")) {
             List<EmployeeEntity> employeeEntity = employeeRepository.findEmployeeByFirstName(searchParam.getName());
             if (employeeEntity != null) {
-                ArrayList<Employee> employees = new ArrayList<>();
                 for (EmployeeEntity entity : employeeEntity) {
                     employees.add(new Employee(entity.getEmployeeId(), entity.getFirstname(), entity.getLastname()));
                 }
-                return employees;
             }
         } else {
             List<EmployeeEntity> employeeEntity = employeeRepository.findEmployeeByLastName(searchParam.getName());
             if (employeeEntity != null) {
-                ArrayList<Employee> employees = new ArrayList<>();
                 for (EmployeeEntity entity : employeeEntity) {
                     employees.add(new Employee(entity.getEmployeeId(), entity.getFirstname(), entity.getLastname()));
                 }
-                return employees;
             }
         }
-        throw new IdNotFoundException("Employee Name Not Found: " + searchParam.getName());
+        if (searchParam.getOrderBy() != null) {
+            manageOrder(employees, searchParam.getOrderBy());
+        }
+        return employees;
     }
+
+
+    /**
+     * Manage Sorting Order based on User Input
+     * Accept Input 'ASC' and 'DESC'
+     */
+    private void manageOrder(ArrayList<Employee> employees, String orderBy) {
+        if (orderBy.equalsIgnoreCase(Sort.Direction.ASC.name())) {
+            Collections.sort(employees, new Comparator<Employee>() {
+                @Override
+                public int compare(Employee o1, Employee o2) {
+                    return o1.getFirstName().compareTo(o2.getFirstName());
+                }
+            });
+        } else if (orderBy.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+            Collections.sort(employees, Collections.reverseOrder());
+        }
+    }
+
 }

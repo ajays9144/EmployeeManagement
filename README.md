@@ -16,5 +16,6 @@ In Controller, Find API endpoints.
     Response:- Updated Employee Details.
    
 4. URL:- http://localhost:8080/1.0/employee/search-employee Method:- POST
-    Consume:- SearchParam which contain 'SearchBy' and 'Name'
+    Consume:- SearchParam which contain 'SearchBy', 'Name' and 'orderBy'(Which is optional from user)
+    And here 'orderBy' Accept only 'ASC' OR 'DESC' which not case-sensitive.
     Response:- Return Matched Name of List for the Employee Details. 
